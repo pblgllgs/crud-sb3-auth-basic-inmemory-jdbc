@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  mysql_db_student:
+    container_name: mysql_db_employee
+    image: mysql:8.0.32
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_employee_security
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - volume_mysql_db_employee_security:/var/lib/mysql
+      #carga al iniciar
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=password --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+volumes:
+  volume_mysql_db_employee_security:
+    external: false
